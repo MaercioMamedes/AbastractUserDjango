@@ -24,13 +24,13 @@ O estudo abrange a criação de um modelo de usuário que herda de `AbstractBase
 
 ## Configuração e Execução
 
-1.  **Clone o repositório:**
+1. **Clone o repositório:**
     ```bash
     git clone <url-do-seu-repositorio>
     cd <nome-da-pasta-do-projeto>
     ```
 
-2.  **Crie um ambiente virtual (recomendado):**
+2. **Crie um ambiente virtual (recomendado):**
     ```bash
     python -m venv venv
     # No Windows
@@ -39,19 +39,19 @@ O estudo abrange a criação de um modelo de usuário que herda de `AbstractBase
     source venv/bin/activate
     ```
 
-3.  **Instale as dependências:**
+3. **Instale as dependências:**
     ```bash
     pip install -r requirements.txt # Certifique-se de ter um arquivo requirements.txt com 'Django'
     ```
 
-4.  **Configure o modelo de usuário customizado:**
+4. **Configure o modelo de usuário customizado:**
     *   Crie um app Django para conter o modelo de usuário customizado, por exemplo, `customauth`.
     *   **No arquivo `settings.py` do seu projeto, defina `AUTH_USER_MODEL` para apontar para o seu modelo customizado ANTES de rodar qualquer migração**. Por exemplo:
         ```python
         # settings.py
         INSTALLED_APPS = [
             # ... outros apps
-            'customauth', # Seu app customizado deve estar aqui
+            'customauth', # Seu app customizado deve estar aqui.
             # ...
         ]
         AUTH_USER_MODEL = 'customauth.MyUser' # Substitua MyUser pelo nome do seu modelo
@@ -59,32 +59,20 @@ O estudo abrange a criação de um modelo de usuário que herda de `AbstractBase
     *   Crie o seu modelo de usuário customizado (por exemplo, em `customauth/models.py`), herdando de `AbstractBaseUser` e definindo o `Manager` customizado.
     *   Crie o seu gerenciador de modelo customizado (por exemplo, em `customauth/models.py`), herdando de `BaseUserManager`.
 
-5.  **Configure o backend de autenticação:**
-    *   Crie um arquivo para seus backends (por exemplo, `customauth/backends.py`).
-    *   Implemente seu backend customizado herdando de `BaseBackend`.
-    *   No arquivo `settings.py`, adicione seu backend à lista `AUTHENTICATION_BACKENDS`. O padrão inclui `django.contrib.auth.backends.ModelBackend`. Você pode substituí-lo ou usá-lo em conjunto.
-        ```python
-        # settings.py
-        AUTHENTICATION_BACKENDS = [
-            'customauth.backends.MyCustomBackend', # Seu backend customizado
-            # 'django.contrib.auth.backends.ModelBackend', # Opcional: manter o backend padrão
-        ]
-        ```
-
-6.  **Crie e aplique as migrações:**
+5. **Crie e aplique as migrações:**
     ```bash
     python manage.py makemigrations customauth # Crie a migração para seu app customauth
     python manage.py migrate # Aplique todas as migrações pendentes, incluindo a do seu modelo customizado
     ```
     **Nota:** O modelo referenciado por `AUTH_USER_MODEL` deve ser criado na primeira migração do seu app (`0001_initial`) para evitar problemas de dependência.
 
-7.  **Crie um superusuário:**
+6. **Crie um superusuário:**
     ```bash
     python manage.py createsuperuser
     ```
     Você será solicitado a fornecer os campos definidos em `REQUIRED_FIELDS` no seu modelo customizado, além do campo definido por `USERNAME_FIELD` e a senha.
 
-8.  **Rode o servidor de desenvolvimento:**
+7. **Rode o servidor de desenvolvimento:**
     ```bash
     python manage.py runserver
     ```
