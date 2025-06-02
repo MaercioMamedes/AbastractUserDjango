@@ -6,6 +6,40 @@ Este projeto é um estudo de caso focado na **personalização completa do siste
 
 O estudo abrange a criação de um modelo de usuário que herda de `AbstractBaseUser` e a implementação de um gerenciador de modelo (`Manager`) que herda de `BaseUserManager`. Ele também mostra a configuração necessária no `settings.py` para que o Django utilize este modelo customizado.
 
+## Contexto
+
+O Usuário Padrão do Django (django.contrib.auth.models.User)
+O Django vem com um sistema de autenticação embutido que inclui um modelo de usuário padrão. Este modelo é verificado por um dos backends de autenticação padrão do Django, o django.contrib.auth.backends.ModelBackend. Este backend básico verifica o banco de dados de usuários do Django e consulta as permissões embutidas.
+O modelo de usuário padrão possui campos e métodos que permitem:
+• Autenticação, geralmente baseada em um username.
+• Gerenciar senhas (incluindo hashing). Métodos como set_password e check_password são herdados de AbstractBaseUser, que é a base para o modelo padrão.
+• Identificar se um usuário está ativo (is_active). O ModelBackend proíbe a autenticação de usuários inativos.
+• Identificar se um usuário tem acesso administrativo (is_staff).
+• Identificar superusuários (is_superuser), que têm todas as permissões.
+• Gerenciar permissões individuais e de grupo. O ModelBackend consulta a tabela auth_permission para isso. Métodos como has_perm e has_module_perms são usados para verificar permissões.
+O modelo padrão funciona bem com o Admin do Django e com a maioria dos formulários de autenticação embutidos.
+
+### Por Que Customizar o Modelo de Usuário?
+1. Embora o sistema de autenticação padrão seja suficiente para a maioria dos casos, existem situações em que o modelo 
+de usuário embutido não é o mais apropriado. Customizar o modelo de usuário pode ser importante por várias razões:
+2. Necessidades Específicas de Identificação: Em alguns sites, faz mais sentido usar um endereço de e-mail como 
+identificador principal em vez de um nome de usuário tradicional. O modelo padrão usa username, mas um modelo customizado 
+pode definir um campo diferente como USERNAME_FIELD.
+3. Adicionar Informações de Perfil Diretamente no Modelo: Você pode precisar armazenar informações adicionais sobre o 
+usuário que não fazem parte do modelo padrão (por exemplo, data de nascimento, altura, departamento). Embora seja possível 
+usar um modelo separado com um OneToOneField (modelo de perfil), manter todas as informações relacionadas ao usuário num
+único modelo customizado pode remover a necessidade de consultas adicionais ou mais complexas para recuperar dados relacionados.
+4. Definir Campos Obrigatórios Específicos: Você pode precisar de campos adicionais que sejam obrigatórios ao criar um 
+usuário, como uma data de nascimento. Um modelo customizado permite definir esses campos usando REQUIRED_FIELDS.
+5. Flexibilidade Futura: É altamente recomendado configurar um modelo de usuário customizado ao iniciar um novo projeto, 
+mesmo que o modelo padrão pareça suficiente no momento. Isso porque mudar para um modelo customizado após a criação das 
+tabelas no banco de dados é significativamente mais difícil, afetando chaves estrangeiras e relacionamentos. Começar com
+um modelo customizado (como herdar de AbstractUser ou AbstractBaseUser) permite personalizá-lo no futuro se a necessidade surgir.
+6. Compatibilidade com AUTH_USER_MODEL: Ao referenciar o modelo de usuário em relacionamentos (como ForeignKey ou 
+ManyToManyField) ou sinais, é crucial usar settings.AUTH_USER_MODEL ou django.contrib.auth.get_user_model(). Definir um
+modelo customizado garante que essa configuração esteja correta desde o início para todas as partes da aplicação que 
+dependem do usuário.
+
 ## Objetivos de Estudo
 
 *   Entender a estrutura do sistema de autenticação do Django.
